@@ -29,9 +29,9 @@ use data\database\DB;
                         $user_id = $_SESSION['auth']['0'] ;    
                         $DB = new DB();
                         $row = $DB ->viewData("*","orders","user_id=$user_id AND status=0");
-                        $order_id = $row['id'];
+                        if(isset($row)):
+                        @$order_id = $row['id'];
                         $row4 = $DB ->viewData("*","users","id=$user_id");
-                        
                         
                         // order
                         // $query = " SELECT * FROM order_products where `order_id` ='$order_id' ";
@@ -60,12 +60,14 @@ use data\database\DB;
             <div class="card shadow-0 border mb-4">
             <?php
                        $row0 = $DB ->viewAllData("*","order_products","order_id=$order_id");
+
                        foreach ($row0 as $row1):
                         $product_id = $row1['product_id'];
                         $row2=$DB->viewData("*","products","`id` ='$product_id'");
                         $row3=$DB->viewData("*","orders","`id` ='$order_id'");
 
-
+                       
+                      
  
 
 
@@ -100,9 +102,12 @@ use data\database\DB;
                     <p class="text-muted mb-0 small"><?php echo $row2['price']  ?>LE</p>
                   </div>
                   <?php
-                  echo "<br>";
                     endforeach ;
-                        ?>
+                    endif ;
+                    if(isset($row3)):
+
+
+                                                                 ?>
 
                 </div>
                 <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
@@ -131,7 +136,7 @@ use data\database\DB;
             </div>
 
             <div class="d-flex justify-content-between pt-2">
-              <p class="text-muted mb-0">Invoice Number : <?php echo $row3['order_code']  ?></p>
+              <p class="text-muted mb-0">Invoice Number : <?php  echo $row3['order_code']  ?></p>
               <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span>0</p>
             </div>
 
@@ -150,12 +155,63 @@ use data\database\DB;
             <h5 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">Total
               paid: <span class="h2 mb-0 ms-2"> <?php echo $row3['total']  ?></span></h5>
           </div>
+
+          <?php
+elseif(!isset($row3)):
+?>
+
+                <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
+                <div class="row d-flex align-items-center">
+                  <div class="col-md-2">
+                    <p class="text-muted mb-0 small">Track Order</p>
+                  </div>
+                  <div class="col-md-10">
+                    <div class="progress" style="height: 6px; border-radius: 16px;">
+                      <div class="progress-bar" role="progressbar"
+                        style="width: 65%; border-radius: 16px; background-color: #a8729a;" aria-valuenow="65"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="d-flex justify-content-around mb-1">
+                      <p class="text-muted mt-1 mb-0 small ms-xl-5">Nothing to deliver</p>
+                      <p class="text-muted mt-1 mb-0 small ms-xl-5"></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between pt-2">
+              <p class="fw-bold mb-0">Order Details</p>
+              <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span> </p>
+            </div>
+
+            <div class="d-flex justify-content-between pt-2">
+              <p class="text-muted mb-0">Invoice Number : </p>
+              <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span>0</p>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <p class="text-muted mb-0">Invoice Date : </p>
+              <p class="text-muted mb-0"><span class="fw-bold me-4">GST 18%</span> </p>
+            </div>
+
+            <div class="d-flex justify-content-between mb-5">
+              <p class="text-muted mb-0">Recepits Voucher : </p>
+              <p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges</span> Free</p>
+            </div>
+          </div>
+          <div class="card-footer border-0 px-4 py-5"
+            style="background-color: #a8729a; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+            <h5 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">Total
+              paid: <span class="h2 mb-0 ms-2"> </span></h5>
+          </div>
+          <?php endif; ?>
+
+
         </div>
       </div>
     </div>
   </div>
-
-
 
 </section>
 </body>

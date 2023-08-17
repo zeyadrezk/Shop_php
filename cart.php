@@ -1,12 +1,18 @@
-<?php   include 'inc/header.php';  
-require_once "data/migration.php";
-require_once "core/functions.php";
-?>
-<?php   include 'inc/navbar.php';   ?>
-<?php   include 'inc/footer.php'; ?>
-<?php include 'data/conn.php'; 
-?>
-<?php 
+<?php  
+    // include 'data/conn.php'; 
+    include 'inc/header.php';  
+    require_once "data/migration.php";
+    require_once "core/functions.php";
+
+    include 'inc/navbar.php';   
+    include 'inc/footer.php'; 
+
+    include 'data/database.php';
+    use  data\database\DB;
+
+    $DB = new DB();
+
+
     if(!isset($_SESSION['auth'])){
         redirect("login.php") ;
         die ;
@@ -47,19 +53,27 @@ require_once "core/functions.php";
                 </div>
 
                 <?php   
-                        $user_id = $_SESSION['auth']['0'] ;            
-                        $query = " SELECT * FROM carts where `user_id` ='$user_id' and `status`= '0'";
-                        $result = mysqli_query($conn, $query);
-                        $row = mysqli_fetch_assoc($result);
+                        $user_id = $_SESSION['auth']['0'] ; 
+                        $row= $DB->viewData("*","carts","`user_id` ='$user_id' and `status`= '0'"); //select cart of user
+                        if(!empty($row)):
                         $total = $row['total'];
                         $cart_id = $row['id'];
-                        $query = " SELECT * FROM cart_products where `cart_id`= '$row[id]'";
-                        $result = mysqli_query($conn, $query);
-                        $rows = mysqli_fetch_assoc($result);
-                        while($rows = mysqli_fetch_assoc($result)):
-                          $query = " SELECT * FROM products where `id` = $rows[product_id]";
-                          $result = mysqli_query($conn, $query);
-                          $row = mysqli_fetch_assoc($result);
+                        $rows = $DB->viewAllData("*","cart_products","`cart_id`= '$row[id]'"); // select products of cart 
+          
+                        foreach($rows as $rowProduct):
+                        $row = $DB->viewData("*", "products", " `id` = $rowProduct[product_id] "); // select every product
+                        // $query = " SELECT * FROM carts where `user_id` ='$user_id' and `status`= '0'";
+                        // $result = mysqli_query($conn, $query);
+                        // $row = mysqli_fetch_assoc($result);
+
+                        // $query = " SELECT * FROM cart_products where `cart_id`= '$row[id]'";
+                        // $result = mysqli_query($conn, $query);
+                        // $rows = mysqli_fetch_assoc($result);
+                        // while($rows = mysqli_fetch_assoc($result)):
+
+                        // $query = " SELECT * FROM products where `id` = $rowProduct[product_id]";
+                        // $result = mysqli_query($conn, $query);  
+                        // $row = mysqli_fetch_assoc($result);
 
                         ?>
                 <div class="card mb-3">
@@ -82,12 +96,11 @@ require_once "core/functions.php";
                       </div>
                       <div class="d-flex flex-row align-items-center">
                         <div style="width: 50px;">
-                          <h5 class="fw-normal mb-0"><?= $rows['quantity']?></h5>
+                          <h5 class="fw-normal mb-0"><?= $rowProduct['quantity']?></h5>
                         </div>
                         <div style="width: 80px;">
                           <h5 class="mb-0"><?php echo $row['price'] ?></h5>
                         </div>
-                        <?php endwhile ?>
 
                         <a href="#!" style="color: #cecece;"><i class="fas fa-trash-alt"></i></a>
                       </div>
@@ -95,6 +108,10 @@ require_once "core/functions.php";
                   </div>
                 </div>
 
+                <?php
+                 endforeach; 
+                endif;
+                ?>
               </div>
 
               <div class="col-lg-5">
@@ -147,7 +164,9 @@ require_once "core/functions.php";
                       </div>
 
                     </form>
-
+                    <?php
+                    if(!empty($row)):
+?>
                     <hr class="my-4">
 
                     <div class="d-flex justify-content-between">
@@ -165,14 +184,14 @@ require_once "core/functions.php";
                       <p class="mb-2"><?= $total ?> </p>
                     </div>
 
-                    <button type="button"  class="btn btn-info btn-block btn-lg" onclick="window.location.href='handeler/ordersproduct.php?id=<?php echo $cart_id  ?>'">
+                    <button type="button"  class="btn btn-info btn-block btn-lg" onclick="window.location.href='handeler/ordersproducts.php?id=<?php echo $cart_id  ?>'">
                       <div class="d-flex justify-content-between">
                        
                         <span> <?= $total ?> $</span>
                         <span>Checkout <i class="fas fa-long-arrow-alt-right ms-2"></i></span>
                       </div>
                     </button>
-
+<?php endif; ?>
                   </div>
                 </div>
 

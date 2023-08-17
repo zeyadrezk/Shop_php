@@ -1,7 +1,6 @@
 <?php
 namespace data\database;
 
-
 class DB{
        public $con;
     public function __construct($dbn='shop',$db='localhost',$user='root',$password='')
@@ -37,8 +36,9 @@ class DB{
     }
 
     public function updateData($tabel ,array $data , $filter=true ){
+
         foreach ($data as $key => $val){
-            $x[] = "`$key`= $val";
+            $x[] = "`$key`= '$val'";
         }
             $vals = implode(" , " , $x);
         $query= "UPDATE `$tabel` SET $vals WHERE $filter";
@@ -46,8 +46,7 @@ class DB{
     }
 
     public function deleteData($table , $filter ){
-        $query = "DELETE `*` FROM `$table` WHERE  $filter";
-
+        $query = "DELETE  FROM `$table` WHERE  $filter";
                      mysqli_query($this->con,$query);
 
     }

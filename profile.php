@@ -1,9 +1,13 @@
 <?php  
-    // include 'data/conn.php'; 
+    include 'data/conn.php'; 
     
     include 'inc/header.php'; 
     require_once "core/functions.php";
     include 'inc/navbar.php';   
+    include 'data/database.php';
+    use  data\database\DB;
+
+    $DB = new DB();
 
 
     if(!isset($_SESSION['auth'])){
@@ -11,9 +15,12 @@
         die ;
     }
         $id = $_SESSION['auth']['0'];
-    $query = "SELECT * FROM `users` where `id` = '$id'";
-    $result = mysqli_query($conn, $query);
-    $row = mysqli_fetch_array($result);
+
+    $row = $DB->viewData("*","users","id = $id");
+
+    // $query = "SELECT * FROM `users` where `id` = '$id'";
+    // $result = mysqli_query($conn, $query);
+    // $row = mysqli_fetch_array($result);
       ?>
 
    

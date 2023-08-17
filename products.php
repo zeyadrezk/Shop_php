@@ -5,12 +5,11 @@
     include 'data/conn.php'  ;
     require_once "core/functions.php";
     include 'data/database.php';
-
 use  data\database\DB;
 $DB = new DB();
- ?>
+ 
 
-<?php 
+
     if(!isset($_SESSION['auth'])){
         redirect("login.php") ;
         die ;

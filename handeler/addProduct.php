@@ -77,7 +77,7 @@ if (empty($errors)){
     // $result = mysqli_query($conn , $sql);
 
 
-    $DB->insertData("products",["name"=>"$store[name]","price"=>"$store[price]","description"=>"$store[description]","quantity"=>"$store[quantity]","image"=>"$nameImage",]);
+    $DB->insertData("products",["name"=>"$store[name]","price"=>"$store[price]","description"=>"$store[description]","quantity"=>"$store[quantity]","image"=>"$nameImage"]);
 
 
    $_SESSION['success'] = "product has been successfully added";
